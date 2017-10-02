@@ -77,3 +77,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Converts object to a String"""
 
         return self.email
+
+
+class ProfileFeedItem(models.Model):
+    """Profile Status Updates"""
+
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+
+    # define fields
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Return the model as a String"""
+        
+        return self.status_text
