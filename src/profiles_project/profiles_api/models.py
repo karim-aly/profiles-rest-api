@@ -1,4 +1,5 @@
 from django.db import models
+
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
@@ -14,7 +15,7 @@ class UserProfileManager(BaseUserManager):
         # check if an email is provided
         if not email:
             raise ValueError('Users must have an email address.')
-        
+
         # normalize email address
         email = self.normalize_email(email)
 
@@ -26,14 +27,14 @@ class UserProfileManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-    
+
     def create_superuser(self, email, name, password=None):
         """Creates a new superuser profile"""
 
         # create a new user entry model
         user = self.create_user(email, name, password)
 
-         # assign user as a superuser
+        # assign user as a superuser
         user.is_superuser = True
         user.is_staff = True
 
@@ -51,7 +52,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # class helps manage user profiles 
+    # class helps manage user profiles
     objects = UserProfileManager()
 
     # field that will be used as the username for the user to login

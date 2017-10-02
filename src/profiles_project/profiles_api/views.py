@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from . import serializers
 from . import models
@@ -41,9 +43,8 @@ class HellpApiView(APIView):
             message = 'Hello {0}'.format(name)
             return Response({'message': message})
 
-        else:
-            return Response(serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     def put(self, request, pk=None):
@@ -89,9 +90,8 @@ class HelloViewSet(viewsets.ViewSet):
             message = 'Hello {0}'.format(name)
             return Response({'message': message})
 
-        else:
-            return Response(serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
         """Handles getting object by its ID"""
@@ -113,6 +113,7 @@ class HelloViewSet(viewsets.ViewSet):
 
         return Response({'http_method': 'DELETE'})
 
+
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Handles creating and updating profiles"""
 
@@ -122,3 +123,14 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email')
+
+
+class LoginViewSet(viewsets.ViewSet):
+    """Checks email and password and returns an auth token"""
+
+    serialzer_class = AuthTokenSerializer
+
+    def create(self, request):
+        """Use the ObtainAuthToken APIView to validate and create a token"""
+
+        return ObtainAuthToken().post(request)
